@@ -1,0 +1,22 @@
+[
+{
+  "directory": "/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-build",
+  "command": "/usr/bin/g++-10   -I/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/include  -g   -std=c++11 -o CMakeFiles/fmt.dir/src/format.cc.o -c /mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/src/format.cc",
+  "file": "/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/src/format.cc"
+},
+{
+  "directory": "/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-build",
+  "command": "/usr/bin/g++-10   -I/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/include  -g   -std=c++11 -o CMakeFiles/fmt.dir/src/posix.cc.o -c /mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/src/posix.cc",
+  "file": "/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/src/posix.cc"
+},
+{
+  "directory": "/mnt/c/Users/Bianca/SpotifyStream/build/src",
+  "command": "/usr/bin/g++-10   -I/mnt/c/Users/Bianca/SpotifyStream/src/../include  -g   -std=c++17 -o CMakeFiles/streamDSPLibrary.dir/streamAPI.cpp.o -c /mnt/c/Users/Bianca/SpotifyStream/src/streamAPI.cpp",
+  "file": "/mnt/c/Users/Bianca/SpotifyStream/src/streamAPI.cpp"
+},
+{
+  "directory": "/mnt/c/Users/Bianca/SpotifyStream/build/app",
+  "command": "/usr/bin/g++-10   -I/mnt/c/Users/Bianca/SpotifyStream/src/../include -I/mnt/c/Users/Bianca/SpotifyStream/build/_deps/fmtlib-src/include  -g   -std=c++17 -o CMakeFiles/app.dir/main.cpp.o -c /mnt/c/Users/Bianca/SpotifyStream/app/main.cpp",
+  "file": "/mnt/c/Users/Bianca/SpotifyStream/app/main.cpp"
+}
+]
