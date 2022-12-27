@@ -1,1 +1,0 @@
-/usr/bin/g++-10  -g  -rdynamic CMakeFiles/testlib.dir/testlib.cpp.o  -o testlib  ../src/libstreamDSPLibrary.a 

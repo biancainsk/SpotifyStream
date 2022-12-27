@@ -1,2 +1,0 @@
-/usr/bin/ar qc libstreamDSPLibrary.a  CMakeFiles/streamDSPLibrary.dir/streamAPI.cpp.o
-/usr/bin/ranlib libstreamDSPLibrary.a
