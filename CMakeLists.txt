@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(SpotifyStreamDSP VERSION 0.1.0 DESCRIPTION "DSP Project for increasing the bass of a song" LANGUAGES CXX)
 
+find_package(CURL REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(JSONCPP jsoncpp)
+link_libraries(${JSONCPP_LIBRARIES})
+
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_EXTENSIONS OFF)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
