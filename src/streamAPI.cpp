@@ -1,7 +1,8 @@
 #include <streamAPI.h>
 
-SpotifyAPI::SpotifyAPI(const std::string& accessTokenParam, const std::string& artistParam, const std::string& trackParam, const std::string& marketParam){
-    accessToken = accessTokenParam;
+SpotifyAPI::SpotifyAPI(const std::string& clientIDParam, const std::string& clientSecretParam, const std::string& artistParam, const std::string& trackParam, const std::string& marketParam){
+    clientID = clientIDParam;
+    clientSecret = clientSecretParam;
     artist = artistParam;
     track = trackParam;
     market = marketParam;
@@ -22,20 +23,79 @@ CURL* SpotifyAPI::initCURL(){
     return curl;
 }
 
+void SpotifyAPI::getAccessToken(){
+
+    curl = initCURL();
+
+    url = "https://accounts.spotify.com/api/token";
+    std::string post_data = "grant_type=client_credentials";
+
+    std::string clientIDSecret = base64Encode(clientID + ":" + clientSecret);
+
+    struct curl_slist* headers = nullptr;
+    headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+    std::string auth = "Authorization: Basic " + clientIDSecret;
+    headers = curl_slist_append(headers, auth.c_str());
+
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallBack);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &accessToken);
+
+    CURLcode res = curl_easy_perform(curl);
+
+    Json::Value root;
+    Json::Reader reader;
+    reader.parse(accessToken, root);
+    accessToken = root["access_token"].asString();
+
+    if (res == CURLE_OK) {
+        std::cerr << "getAccessToken request successful!" << std::endl;
+    }
+    else {
+        std::cerr << "getAccessToken request unsuccessful!" << std::endl;
+        exit(1);
+    }
+}
+
+std::string SpotifyAPI::base64Encode(const std::string& input) {
+    
+    static const char base64_chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                        "abcdefghijklmnopqrstuvwxyz"
+                                        "0123456789+/";
+    std::string output;
+
+    output.reserve((input.size() + 2) / 3 * 4);
+    for (std::size_t i = 0; i < input.size(); i += 3) {
+        unsigned int j = ((unsigned char)input[i]) << 16;
+        if (i + 1 < input.size()) j |= ((unsigned char)input[i + 1]) << 8;
+        if (i + 2 < input.size()) j |= ((unsigned char)input[i + 2]);
+
+        output.push_back(base64_chars[(j >> 18) & 0x3F]);
+        output.push_back(base64_chars[(j >> 12) & 0x3F]);
+        if (i + 1 < input.size()) output.push_back(base64_chars[(j >> 6) & 0x3F]);
+        if (i + 2 < input.size()) output.push_back(base64_chars[j & 0x3F]);
+    }
+    while (output.size() % 4 != 0) output.push_back('=');
+
+    return output;
+}
+
 std::string SpotifyAPI::encodeURL(const std::string& URL){
 
     curl = initCURL();
-    std::string result{"None"};
+    std::string encodedURL{"None"};
 
     char* encoded = curl_easy_escape(curl, URL.c_str(), URL.length());
-    result = encoded;
+    encodedURL = encoded;
 
-    if (result == "None"){
+    if (encodedURL == "None"){
         std::cerr << "URL encoding unsuccessful!" << std::endl;
         exit(1);
     }
 
-    return result;
+    return encodedURL;
 }
 
 size_t SpotifyAPI::writeCallBack(char* ptr, size_t size, size_t nmemb, void* userdata){
@@ -51,35 +111,35 @@ size_t SpotifyAPI::writeCallBack(char* ptr, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
-std::string SpotifyAPI::getAPIResponse(){
+void SpotifyAPI::getAPIResponse(){
 
-    std::string response{""};
-    std::string query = encodeURL(artist + " " + track);
-    std::string url = "https://api.spotify.com/v1/search?q=" + query + "&type=track&market=" + market + "&limit=1";
+    getAccessToken();
+
+    url = "https://api.spotify.com/v1/search?q=" + encodeURL(artist + " " + track) + "&type=track&market=" + market + "&limit=1";
 
     struct curl_slist* headers = nullptr;
     std::string auth_header = "Authorization: Bearer " + accessToken;
     headers = curl_slist_append(headers, auth_header.c_str());
+
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallBack);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &APIresponse);
+
     CURLcode res = curl_easy_perform(curl);
+
     if (res == CURLE_OK) {
-        std::cerr << "Request successful!" << std::endl;
-        return response;
+        std::cerr << "getAPIResponse request successful!" << std::endl;
     }
     else {
-        std::cerr << "Request unsuccessful!" << std::endl;
+        std::cerr << "getAPIResponse request unsuccessful!" << std::endl;
         exit(1);
     }
-
-    return response;
 }
 
 std::string SpotifyAPI::getURL(){
 
-    std::string APIresponse = getAPIResponse();
+    getAPIResponse();
     Json::Value root;
     Json::Reader reader;
 
