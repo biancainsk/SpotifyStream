@@ -10,19 +10,25 @@
 
 class SpotifyAPI{
 private:
-    std::string accessToken{"None"};
+    std::string accessToken{""};
     std::string artist{"None"};
     std::string track{"None"};
     std::string market{"None"};
+    std::string clientID{"None"};
+    std::string clientSecret{"None"};
     CURL* curl = nullptr;
+    std::string url{"None"};
+    std::string APIresponse{""};
 public:
-    SpotifyAPI(const std::string& accessTokenParam, const std::string& artistParam, const std::string& trackParam, const std::string& marketParam);
+    SpotifyAPI(const std::string& clientIDParam, const std::string& clientSecretParam, const std::string& artistParam, const std::string& trackParam, const std::string& marketParam);
     ~SpotifyAPI();
 
     CURL* initCURL();
+    void getAccessToken();
+    std::string base64Encode(const std::string& input);
     std::string encodeURL(const std::string& URL);
     static size_t writeCallBack(char* ptr, size_t size, size_t nmemb, void* userdata);
-    std::string getAPIResponse();
+    void getAPIResponse();
     std::string getURL();
 
 };
