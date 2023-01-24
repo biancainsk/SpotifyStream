@@ -1,4 +1,6 @@
-#include <streamAPI.h>
+#include <getURL.h>
+
+CURL* SpotifyAPI::curl = nullptr;
 
 SpotifyAPI::SpotifyAPI(const std::string& clientIDParam, const std::string& clientSecretParam, const std::string& artistParam, const std::string& trackParam, const std::string& marketParam){
     clientID = clientIDParam;
