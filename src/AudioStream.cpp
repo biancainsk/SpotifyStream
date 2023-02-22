@@ -5,11 +5,16 @@ AudioStream::~AudioStream(){
     curl = nullptr;
 }
 
-size_t AudioStream::writeCallBack(char* ptr, size_t size, size_t nmemb, std::vector<unsigned char>* buffer){
+size_t AudioStream::writeCallBack(char* ptr, size_t size, size_t nmemb, std::vector<char>* buffer){
 
     size_t realsize = size * nmemb;
     buffer->insert(buffer->end(), ptr, ptr + realsize);
     return realsize;
+}
+static size_t WriteData(void *buffer, size_t size, size_t nmemb, void *stream)
+{
+    size_t written = fwrite(buffer, size, nmemb, (FILE *)stream);
+    return written;
 }
 
 void AudioStream::saveSong(std::string URL){
@@ -30,19 +35,12 @@ void AudioStream::saveSong(std::string URL){
         std::cout << "Data fetched successfully" << std::endl;
     }
 
-    // std::cout << "Buffer contents: ";
-    // for(auto i: buffer) {
-    //     std::cout << (int)i << " ";
-    // }
-    // std::cout << std::endl;
+    std::ofstream file("output.bin", std::ios::out | std::ios::binary);
+    file.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
+    file.close();
+}
 
-    std::ofstream outputFile("output.bin", std::ios::binary);
-    if (!outputFile) {
-        std::cerr << "Failed to open file for writing" << std::endl;
-        exit(1);
-    }
-    outputFile.write(reinterpret_cast<char*>(buffer.data()), buffer.size());
-    outputFile.close();
+void AudioStream::getSongData(){
 
     SF_INFO info;
     SNDFILE *sndfile = sf_open("song.wav", SFM_READ, &info);
@@ -56,4 +54,9 @@ void AudioStream::saveSong(std::string URL){
     std::cout << "Bit depth: " << info.format << "\n";
 
     sf_close(sndfile);
+}
+
+
+void AudioStream::decodePCM(){
+    
 }
