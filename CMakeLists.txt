@@ -5,6 +5,9 @@ find_package(CURL REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
+pkg_check_modules(SNDFILE sndfile)
+link_libraries(${SNDFILE_LIBRARIES})
+
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_EXTENSIONS OFF)
