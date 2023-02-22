@@ -3,11 +3,14 @@ project(SpotifyStreamDSP VERSION 0.1.0 DESCRIPTION "DSP Project for increasing t
 
 find_package(CURL REQUIRED)
 find_package(PkgConfig REQUIRED)
+
 pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
 pkg_check_modules(SNDFILE sndfile)
 link_libraries(${SNDFILE_LIBRARIES})
-
+pkg_check_modules(GST REQUIRED gstreamer-1.0)
+include_directories(${GST_INCLUDE_DIRS})
+link_directories(${GST_LIBRARY_DIRS})
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   set(CMAKE_CXX_EXTENSIONS OFF)
