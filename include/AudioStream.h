@@ -9,17 +9,20 @@
 #include <fstream>
 
 #include <initCurl.h>
+#include <gst/gst.h>
 
 class AudioStream{
 private:
     CURL* curl = nullptr;
-    std::vector<unsigned char> buffer;
+    std::vector<char> buffer;
 public:
     AudioStream() = default;
     ~AudioStream();
 
-    static size_t writeCallBack(char* ptr, size_t size, size_t nmemb, std::vector<unsigned char>* buffer);
+    static size_t writeCallBack(char* ptr, size_t size, size_t nmemb, std::vector<char>* buffer);
     void saveSong(std::string URL);
+    void getSongData();
+    void decodePCM();
 };
 
 #endif
